@@ -139,10 +139,6 @@ class Filesystem
      */
     public function read($key)
     {
-        if (!empty($key)) {
-            throw new Exception\FileNotFound($key);
-        }
-
         $content = $this->adapter->read($key);
 
         if (false === $content) {
