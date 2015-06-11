@@ -13,11 +13,11 @@ use Gaufrette\Adapter\ListKeysAware;
 class Filesystem
 {
     protected $adapter;
-    
+
     /**
      * Contains File objects created with $this->createFile() method
-     * 
-     * @var array 
+     *
+     * @var array
      */
     protected $fileRegister = array();
 
@@ -75,7 +75,7 @@ class Filesystem
         if (! $this->adapter->rename($sourceKey, $targetKey)) {
             throw new \RuntimeException(sprintf('Could not rename the "%s" key to "%s".', $sourceKey, $targetKey));
         }
-        
+
         if($this->isFileInRegister($sourceKey)) {
             $this->fileRegister[$targetKey] = $this->fileRegister[$sourceKey];
             unset($this->fileRegister[$sourceKey]);
@@ -139,7 +139,9 @@ class Filesystem
      */
     public function read($key)
     {
-        $this->assertHasFile($key);
+        if (!empty($key)) {
+            throw new Exception\FileNotFound($key);
+        }
 
         $content = $this->adapter->read($key);
 
@@ -332,12 +334,12 @@ class Filesystem
             throw new Exception\FileNotFound($key);
         }
     }
-    
+
     /**
      * Checks if matching File object by given key exists in the fileRegister
-     * 
+     *
      * @param string $key
-     * 
+     *
      * @return bool
      */
     private function isFileInRegister($key)
